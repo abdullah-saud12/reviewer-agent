@@ -3,11 +3,9 @@ name: create-commit
 description: Create the commit.
 ---
 
-**IMPORTANT: Every commit subject line MUST end with a CI tag like `[ci run_smart]`**
-
 - Review the staged diff and create a conventional commit message following this format:
   ```
-  <type>(<scope>): <subject> [ci tag]
+  <type>(<scope>): <subject>
 
   <body>
 
@@ -33,8 +31,7 @@ description: Create the commit.
   - Use imperative, present tense: "change" not "changed" nor "changes"
   - Don't capitalize the first letter
   - No period (.) at the end
-  - Limit to ~50 characters (excluding CI tag) to keep total under 72
-  - **Always append a CI tag at the end** (see CI Tags below)
+  - Keep the subject line under 72 characters total
 
 - **Body** (optional): Provide more detailed explanation if needed:
   - Use imperative, present tense
@@ -45,16 +42,9 @@ description: Create the commit.
   - Breaking changes start with `BREAKING CHANGE:`
   - Reference issues with `Closes #123` or `Fixes #123`
 
-- **CI Tags** (REQUIRED - append to end of subject line):
-  - `[ci run_smart]`: **(default)** Run smart spec detection - only tests affected files. **Use this for most changes.**
-  - `[ci run]`: Run the full CI test suite
-  - `[ci skip]`: Skip CI entirely (avoid using this)
-  - `[ci fasttrack]`: Fast-track CI mode
-  - **CRITICAL**: Every commit MUST have a CI tag at the end of the subject line. When in doubt, use `[ci run_smart]`.
-
 - Example:
   ```
-  feat(time_sheet): add customer filter [ci run_smart]
+  feat(time_sheet): add customer filter
 
   Add customer_id parameter to time sheet queries to ensure proper
   data filtering. This prevents cross-customer data exposure and
