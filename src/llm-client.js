@@ -11,9 +11,9 @@ function stripFences(text) {
   return text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 }
 
-// parse response text into an array of raw finding objects
-function parseFindings(text) {
-  const parsed = JSON.parse(stripFences(text));
+// prepend the prefill character and parse into an array of raw finding objects
+function parseFindings(text, prefill = '') {
+  const parsed = JSON.parse(stripFences(prefill + text));
   return Array.isArray(parsed) ? parsed : [parsed];
 }
 
@@ -27,7 +27,12 @@ function collectErrors(findings) {
 
 // call the model, validate findings, retry once with errors if invalid, throw if still broken
 export async function callModel({ systemPrompt, userMessage, model = DEFAULT_MODEL }) {
-  const messages = [{ role: 'user', content: userMessage }];
+  // prefill forces the model to continue a JSON array rather than adding prose
+  const PREFILL = '[';
+  const messages = [
+    { role: 'user', content: userMessage },
+    { role: 'assistant', content: PREFILL },
+  ];
 
   const firstResponse = await client.messages.create({
     model,
@@ -40,7 +45,7 @@ export async function callModel({ systemPrompt, userMessage, model = DEFAULT_MOD
   let findings;
 
   try {
-    findings = parseFindings(firstText);
+    findings = parseFindings(firstText, PREFILL);
   } catch {
     throw new Error(`Model returned non-JSON output: ${firstText.slice(0, 200)}`);
   }
